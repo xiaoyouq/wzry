@@ -1,6 +1,7 @@
 module.exports = app => {
   const express = require('express')
   const router = express.Router({
+    // 这句话的意思是把父级的参数合并到子级里面 让子级也能访问的到
     mergeParams: true
   })
 
@@ -49,8 +50,9 @@ module.exports = app => {
 
   // 引入一个包 可以把上传的图片存到文件夹里面 
   const multer = require('multer')
+
   const upload = multer({ dest: __dirname + '/../../uploads' })
-  app.post('/admin/api/uploads',upload.single('file'), async (req, rep, next) => {
+  app.post('/admin/api/uploads', upload.single('file'), async (req, rep, next) => {
     const file = req.file
     file.url = `http://localhost:3000/uploads/${file.filename}`
     rep.send(file)

@@ -22,13 +22,23 @@
               <el-menu-item index="/HeroEdit/Create">新建英雄</el-menu-item>
               <el-menu-item index="/HeroEdit/List">英雄列表</el-menu-item>
             </el-menu-item-group>
+            <el-menu-item-group>
+              <template slot="title">文章</template>
+              <el-menu-item index="/ArticlesEdit/Create">新建文章</el-menu-item>
+              <el-menu-item index="/ArticlesList/List">文章列表</el-menu-item>
+            </el-menu-item-group>
+                    <el-menu-item-group>
+              <template slot="title">广告</template>
+              <el-menu-item index="/AdsEdit/Create">新建广告位</el-menu-item>
+              <el-menu-item index="/AdsList/List">广告列表</el-menu-item>
+            </el-menu-item-group>
           </el-submenu>
         </el-menu>
       </el-aside>
 
       <el-container>
         <el-header style="text-align: right; font-size: 12px"></el-header>
-        <router-view></router-view>
+        <router-view class="manin"></router-view>
       </el-container>
     </el-container>
   </div>
@@ -59,3 +69,9 @@ export default {
   }
 };
 </script>
+<style>
+.manin {
+  width: 97.5%;
+  margin: 0 auto;
+}
+</style>
