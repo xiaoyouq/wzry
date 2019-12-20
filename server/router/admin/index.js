@@ -1,5 +1,9 @@
 module.exports = app => {
   const express = require('express')
+  const jwt = require('jsonwebtoken')
+  const ser = app.get('ser')
+  const assert = require('http-assert')
+  const admin = require('../../model/AdminUser')
   const router = express.Router({
     // 这句话的意思是把父级的参数合并到子级里面 让子级也能访问的到
     mergeParams: true
@@ -40,13 +44,11 @@ module.exports = app => {
     rep.send(items)
   })
 
-  app.use('/admin/api/rest/:resourse', async (req, rep, next) => {
-    // 这一步的作用是把负数转为大小写的模式  用模块 inflection 
-    req.nodeModel = require('inflection').classify(req.params.resourse)
-    // 这一步是让所有访问以/rest开头的都能携带一个参数 req.model 这样就可以访问对应的数据库model 
-    req.model = require(`../../model/${req.nodeModel}`)
-    next()
-  }, router)
+  const aut = require('../../middleware/auth')
+
+  const aut1 = require('../../middleware/resource')
+
+  app.use('/admin/api/rest/:resourse', aut(), aut1(), router)
 
   // 引入一个包 可以把上传的图片存到文件夹里面 
   const multer = require('multer')
@@ -58,4 +60,35 @@ module.exports = app => {
     rep.send(file)
   })
 
+
+  app.post('/admin/api/login', async (req, rep) => {
+    const { username, password } = req.body
+    // 先在客户端找出来这个  
+    const res = await admin.findOne({ username }).select('+password')
+
+    assert(res, 401, '用户不存在')
+
+
+    // 解析密码 会得出来一个布尔值 true就是正确的 false 就是不对
+    const log = require('bcryptjs').compareSync(password, res.password)
+
+
+    assert(log, 422, '密码错误')
+
+    // 验证成功后 把token 传过去  前端再保存token 然后请求的时候 每次都带着token请求
+    const userID = jwt.sign({ _id: res._id, id: res._id, username: res.username }, ser)
+
+    rep.send({ userID })
+  })
+
+  // 错误处理
+  // 错误处理 所有请求出错的都会走这边 
+  app.use(async (err, req, rep, next) => {
+    if (err) {
+      await rep.status(err.statusCode || 500).send({ message: err.message })
+      next()
+    } else {
+      next()
+    }
+  })
 }

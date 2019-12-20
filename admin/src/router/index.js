@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 import Main from '../views/Main.vue'
 import CategoryEdit from '../views/CategoryEdit.vue'
 import CategoryList from '../views/CategoryLlist.vue'
@@ -12,11 +11,15 @@ import ArticlesEdit from '../views/articlesEdit.vue'
 import ArticlesList from '../views/articlesList.vue'
 import AdsEdit from '../views/AdsEdit.vue'
 import AdsList from '../views/AdsList.vue'
+import AdminUserEdit from '../views/AdminUserEdit.vue'
+import AdminUserList from '../views/AdminUserList.vue'
+import Login from '../views/Login.vue'
 
 
 Vue.use(VueRouter)
 
 const routes = [
+  {path:'/login',name:Login,component:Login},
   {
     path: '/',
     name: 'Main',
@@ -43,6 +46,10 @@ const routes = [
       { path: '/AdsEdit/Create', name: 'ArticlesEdit', component: AdsEdit },
       { path: '/Ads/edit/:id', name: 'ArticlesEdit', component: AdsEdit, props: true },
       { path: '/AdsList/List', name: 'ArticlesList', component: AdsList },
+
+      { path: '/admin_users/Create', name: 'AdminUserEdit', component: AdminUserEdit },
+      { path: '/admin_users/edit/:id', name: 'AdminUserEdit', component: AdminUserEdit, props: true },
+      { path: '/admin_users/List', name: 'AdminUserList', component: AdminUserList },
     ]
   },
 ]
